@@ -1,0 +1,17 @@
+{
+  "name": "do-not-reenter",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "test": "tsc -b && node js-outs/src/test.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@openzeppelin/contracts": "^4.6.0",
+    "solc-typed-ast": "^10.1.2",
+    "typescript": "^4.7.3"
+  }
+}
