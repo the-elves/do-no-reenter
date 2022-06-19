@@ -1,5 +1,5 @@
-import { ASTNode, Block, Break, Continue, DoWhileStatement, ForStatement, FunctionDefinition, IfStatement, Return, Statement, WhileStatement } from "solc-typed-ast";
-import { CFGNode } from "./CFGNode";
+import { assert, Assignment, ASTNode, Block, Break, Continue, ContractDefinition, DoWhileStatement, ExpressionStatement, ForStatement, FunctionDefinition, Identifier, IfStatement, Return, Statement, VariableDeclaration, WhileStatement, XPath } from "solc-typed-ast";
+
 
 export function findBlockInDefinition(node:FunctionDefinition): Block|undefined{
     for(let child of node.children){
@@ -14,20 +14,39 @@ export function findBlockInDefinition(node:FunctionDefinition): Block|undefined{
     - Placeholder statement ?
     - Revert ?
     - Throw/Try/Catch
+    - return
+    - break
+    - continue
 
 */
 export function isBranchingStatement(node:Statement): Boolean{
     if(
-        node instanceof Break ||
-        node instanceof Continue ||
         node instanceof DoWhileStatement ||
         node instanceof ForStatement ||
         node instanceof IfStatement || 
-        node instanceof Return ||
         node instanceof WhileStatement
     )
         return true;
     return false;
 }
 
+export function containsFunctionCall(s:Statement){
+    let xwalker = new XPath(s);
+    return xwalker.query("//FunctionCall").length != 0;
 
+}
+
+export function doesMutateState(node: ExpressionStatement){
+    if(node.vExpression instanceof Assignment){
+        let lhs = node.vExpression.vLeftHandSide;
+        let id = lhs.firstChild;
+        if(id !== undefined){
+            assert(id instanceof Identifier, "id not identifier");
+            let vRefDeclaration = id.vReferencedDeclaration as VariableDeclaration;
+            if(vRefDeclaration.vScope instanceof ContractDefinition){
+                return true;
+            }
+        }
+    }
+    return false;
+}

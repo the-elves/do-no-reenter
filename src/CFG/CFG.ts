@@ -1,13 +1,16 @@
-import { assert, ASTNode, Block, FunctionDefinition } from "solc-typed-ast";
+import { assert, ASTNode, ASTNodeFactory, Block, FunctionDefinition, UsingForDirective } from "solc-typed-ast";
 import { findBlockInDefinition } from "./ASTHelper";
 import { CFGEdge } from "./CFGEdge";
-import { CFGNode } from "./CFGNode";
+import { CFGNode, NodeTypes } from "./CFGNode";
 
 export class CFG{
     nodes: Array<CFGNode> = new Array<CFGNode>();
     edges: Array<CFGEdge> = new Array<CFGEdge>();
-    startNode: CFGNode = new CFGNode();
-    endNode: CFGNode = new CFGNode();
+    startNode: CFGNode = new CFGNode(undefined, NodeTypes.start);
+    endNode: CFGNode = new CFGNode(undefined, NodeTypes.end);
+    map!: Map<number, Array<CFGEdge>>;
+    name = "";
+    filename = "";
 
     public constructor(){
         this.nodes.push(this.startNode);
@@ -70,4 +73,50 @@ export class CFG{
         }
     }
 
+    getEdgeByNodes(src: CFGNode,dest: CFGNode){
+        if(this.hasEdge(src,dest)){
+            for(let e of this.edges){
+                if(src.id === e.src.id &&
+                    dest.id === e.dest.id)
+                    {
+                        return e;
+                    }
+            }
+        }
+    }
+
+    allIncomingEdges(dest:CFGNode){
+        let incomingEdges = new Array<CFGEdge>;
+        for(const e of this.edges){
+            if(e.dest.id == dest.id){
+                incomingEdges.push(e)
+            }
+        }
+        return incomingEdges;
+    }
+
+    allOutgoingEdges(src:CFGNode){
+        let outgoingEdges = new Array<CFGEdge>;
+        for(const e of this.edges){
+            if(e.src.id == src.id){
+                outgoingEdges.push(e)
+            }
+        }
+        return outgoingEdges;
+    }
+
+    updateIdNodeMap(){
+        this.map= new Map<number, Array<CFGEdge>>();
+        let m = this.map;
+        let ids = new Array<number>();
+        for(let n of this.nodes)
+            ids.push(n.id);
+        ids.sort();
+        for(let i of ids){
+            let n = this.getNodeById(i);
+            if(n === undefined)
+                continue
+            m.set(i, this.allOutgoingEdges(n));
+        }
+    }
 }

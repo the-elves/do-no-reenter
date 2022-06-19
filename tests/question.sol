@@ -5,7 +5,8 @@ pragma solidity ^0.8.0;
 contract Question {
     mapping(address => uint256) credit;
 
-    function withdraw(uint256 amount) public {
+    
+    function withdraw(uint256 amount) internal {
         bool success;
         bytes memory data;
         if (credit[msg.sender] >= amount) {
