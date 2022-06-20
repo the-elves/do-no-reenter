@@ -138,7 +138,7 @@ export class FunctionAnalyzer{
         let destNode = this.pickedEdge.dest;
         for(const e of this.cfg.allOutgoingEdges(destNode)){
             let newState = e.state.union(outputState);
-            if(outputState.strictlyGreaterThanEqualTo(e.state)){
+            if(outputState.strictlyGreaterThan(e.state)){
                 e.state = newState;
                 this.markedEdges.push(e);
             }

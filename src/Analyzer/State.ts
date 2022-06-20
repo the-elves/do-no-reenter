@@ -17,8 +17,8 @@ export class State{
     return this.externalFunctionCalled >= other.externalFunctionCalled;
    }
 
-   strictlyGreaterThanEqualTo(other: State){
-    return this.externalFunctionCalled >= other.externalFunctionCalled;
+   strictlyGreaterThan(other: State){
+    return this.externalFunctionCalled > other.externalFunctionCalled;
    }
 
    union(other:State){
