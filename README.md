@@ -39,6 +39,11 @@ Following is the basic working of the tool
 - It then analyzes ast to generate a control flow graph for each function. 
 - Analyze every function (Control flow graph representation) in the contracts.
 
+The control flow graphs are dumped to cfg-outs directory in project root. 
+The cfg file names are named 
+
+"cfg-outs/<contract-filename.sol>:<functionName.sol>.cfg"
+
 ### Abstract Interpretation
 Abstract interpretation is a powerful technique to analyze programs. It works by working on abstract representation of state of the program Abstract interpretation calculates these abstract values at every program point.
 
@@ -77,6 +82,7 @@ This is the lattice of abstract values
 ├── main.ts                  - Program entry point
 ```
 
+### Interprocedural analysis
 Right now the interprocedural part of anlysis is performed as follows.
 
 Intraprocedural analysis is attempted on all functions. For the function that are succesfully analyzed, analysis is stored for later use (abstract values for each program location).
