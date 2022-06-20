@@ -1,15 +1,27 @@
-import { CompileFailedError, CompileResult, compileSol, ASTReader, FunctionCallOptions, Assignment, XPath, CompilationOutput, FunctionDefinition, assert } from "solc-typed-ast";
+import { compileSol, ASTReader, XPath, CompilationOutput, FunctionDefinition, assert, FunctionCallOptions } from "solc-typed-ast";
 import commandLineArgs from "command-line-args";
-import { getCFGFromBlock } from "./CFG/CFGBuilder";
-import { CFG } from "./CFG/CFG";
+import {parse} from 'ts-command-line-args' 
 import { ANALYSIS_STATUS, FunctionAnalyzer } from "./Analyzer/FunctionAnalyzer";
-const optionDefinition = [
-    {name : 'inputs', alias: 'i', multiple: true}
-];
+// const optionDefinition = [
+//     {name : 'inputs', alias: 'i', multiple: true, description: "The files containing contracts to be analyzed. "}, 
+// ];
 
+interface IInputFilesArgs{
+    inputs: string; 
+    help?: boolean;
+}
 
 async function main(){
-    let options = commandLineArgs(optionDefinition);
+    // let options = commandLineArgs(optionDefinition);
+    let options = parse<IInputFilesArgs>({
+        inputs: {type: String, alias: 'i', multiple: true, description: 'Files to analyze'},
+        help: { type: Boolean, optional: true, alias: 'h', description: 'Prints this usage guide' }
+    },
+    {
+        helpArg: 'help',
+        headerContentSections: [{ header: 'Do-Not-Reenter', content: 'This is an abstract interpretation based,'+
+        'static analyzer to detect {bold Reentrancy bugs} in solidity smart contracts' }],
+    });
     let function2analysis = new Map<string, FunctionAnalyzer>();
     for(const i of options['inputs']){
         let c = await compileSol(i,"auto", undefined, [CompilationOutput.IR, CompilationOutput.AST]);

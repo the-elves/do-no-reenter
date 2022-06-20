@@ -5,7 +5,8 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "build": "tsc -b"
+    "build": "tsc -b",
+    "do-not-reenter": "tsc -b; /home/ajinkya/Packages/node-v16.15.1-linux-x64/bin/node --es-module-specifier-resolution=node ./js-outs/src/main.js"
   },
   "author": "",
   "license": "ISC",
@@ -13,7 +14,9 @@
     "@openzeppelin/contracts": "^4.6.0",
     "@types/command-line-args": "^5.2.0",
     "command-line-args": "^5.2.1",
+    "command-line-usage": "^6.1.3",
     "solc-typed-ast": "^10.1.2",
+    "ts-command-line-args": "^2.3.1",
     "typescript": "^4.7.3"
   }
 }
