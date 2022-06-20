@@ -20,9 +20,13 @@ contract SideEntranceLenderPool {
         balances[msg.sender] += msg.value;
     }
 
+    function subwithdraw(address addr) internal{
+        payable(addr).sendValue(10);
+    }
+
     function withdraw() external {
         uint256 amountToWithdraw = balances[msg.sender];
-        payable(msg.sender).sendValue(amountToWithdraw);
+        subwithdraw(msg.sender);
         balances[msg.sender] = 0;
         amountToWithdraw+=1;
     }

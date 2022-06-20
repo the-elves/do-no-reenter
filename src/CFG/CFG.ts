@@ -1,4 +1,5 @@
 import { assert, ASTNode, ASTNodeFactory, Block, FunctionDefinition, UsingForDirective } from "solc-typed-ast";
+import { STATE_VALUE } from "../Analyzer/State";
 import { findBlockInDefinition } from "./ASTHelper";
 import { CFGEdge } from "./CFGEdge";
 import { CFGNode, NodeTypes } from "./CFGNode";
@@ -118,5 +119,14 @@ export class CFG{
                 continue
             m.set(i, this.allOutgoingEdges(n));
         }
+    }
+
+    anyEdgeWithExternalCall(){
+        for(const e of this.edges){
+            if(e.state.externalFunctionCalled = STATE_VALUE.YES){
+                return true;
+            }
+        }
+        return false;
     }
 }
