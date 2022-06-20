@@ -59,6 +59,7 @@ export class FunctionAnalyzer{
             }
         }
         this.cfg.updateIdNodeMap();
+        this.cfg.dumpToFile()
         this.findErrorNodes();
         console.log("[+]Analyzed "+this.cfg.name);
         return ANALYSIS_STATUS.SUCCESS;

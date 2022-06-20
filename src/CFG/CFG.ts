@@ -1,6 +1,6 @@
 import { assert, ASTNode, ASTNodeFactory, Block, FunctionDefinition, UsingForDirective } from "solc-typed-ast";
 import { STATE_VALUE } from "../Analyzer/State";
-import { findBlockInDefinition } from "./ASTHelper";
+import  * as fs from "fs";
 import { CFGEdge } from "./CFGEdge";
 import { CFGNode, NodeTypes } from "./CFGNode";
 
@@ -128,5 +128,23 @@ export class CFG{
             }
         }
         return false;
+    }
+
+    getStringRepresentation(){
+        let f = fs.readFileSync(this.filename);
+        let o = "Edges:\n";
+        for(const e of this.edges.sort((a,b)=>a.src.id-b.src.id)){
+            o+=e.getStringReprestation()+'\n';
+        }
+        o+="Nodes:\n"
+        for(const n of this.nodes.sort((a,b)=>a.id-b.id)){
+            o+=n.getStringReprestation(f.toString())+'\n\n\n';
+        }
+        return o;
+    }
+
+    dumpToFile(){
+        let filename = 'cfg-outs/'+ this.filename.split('/').pop()+':'+this.name+'.cfg';
+        fs.writeFileSync(filename, this.getStringRepresentation())
     }
 }

@@ -1,4 +1,4 @@
-import { ASTNode, ExpressionStatement, Statement } from "solc-typed-ast";
+import { assert, ASTNode, Statement } from "solc-typed-ast";
 export enum NodeTypes{
     join="join|", 
     start="start|", 
@@ -31,6 +31,21 @@ export class CFGNode{
         else
             this.nodetype = "";
 
+    }
+
+    getStringReprestation(file:string){
+        let s = "";
+        s+="<node id ="+this.id + "  type="+this.nodetype+"\n";
+        for(let st of this.statements){
+            s+=st.extractSourceFragment(file) + "\n";
+
+        }
+        s+="successors = [";
+        for(let succ of this.successors){
+            s+=succ.id+','
+        }
+        s+="]>"
+        return s;
     }
 
 }

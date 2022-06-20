@@ -12,4 +12,11 @@ export class CFGEdge{
         this.dest = d;
         CFGEdge.id+=1;
     }
+
+    getStringReprestation(){
+        let s = "";
+        s+="<node src-id = "+this.src.id +" dest-id = "+
+        this.dest.id+ " desttype="+this.dest.nodetype+"  state= "+this.state.externalFunctionCalled+">";
+        return s;
+    }
 }
