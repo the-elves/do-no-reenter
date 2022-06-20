@@ -1,4 +1,4 @@
-import { assert, Assignment, ASTNode, Block, Break, Continue, ContractDefinition, DoWhileStatement, ExpressionStatement, ForStatement, FunctionDefinition, Identifier, IfStatement, Return, Statement, VariableDeclaration, WhileStatement, XPath } from "solc-typed-ast";
+import { assert, Assignment, ASTNode, Block, Break, Continue, ContractDefinition, DoWhileStatement, ExpressionStatement, ForStatement, FunctionDefinition, Identifier, IfStatement, Return, Statement, UnaryOperation, VariableDeclaration, WhileStatement, XPath } from "solc-typed-ast";
 
 
 export function findBlockInDefinition(node:FunctionDefinition): Block|undefined{
@@ -39,7 +39,7 @@ export function containsFunctionCall(s:Statement){
 export function doesMutateState(node: ExpressionStatement){
     if(node.vExpression instanceof Assignment){
         let lhs = node.vExpression.vLeftHandSide;
-        let id = lhs.firstChild;
+        let id = lhs.getChildrenByType(Identifier)[0];
         if(id !== undefined){
             assert(id instanceof Identifier, "id not identifier");
             let vRefDeclaration = id.vReferencedDeclaration as VariableDeclaration;
@@ -47,6 +47,16 @@ export function doesMutateState(node: ExpressionStatement){
                 return true;
             }
         }
+    } else if(node.vExpression instanceof UnaryOperation){
+        let id = node.vExpression.vSubExpression.getChildrenByType(Identifier)[0];
+        if(id !== undefined){
+            assert(id instanceof Identifier, "id not identifier");
+            let vRefDeclaration = id.vReferencedDeclaration as VariableDeclaration;
+            if(vRefDeclaration.vScope instanceof ContractDefinition){
+                return true;
+            }
+        }
+
     }
     return false;
 }

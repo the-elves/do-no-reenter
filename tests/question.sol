@@ -12,7 +12,7 @@ contract Question {
         if (credit[msg.sender] >= amount) {
             (success, data) = msg.sender.call{value: amount}("");
             require(success);
-            credit[msg.sender] -= amount;
+            credit[msg.sender]--;
         }
     }
 }

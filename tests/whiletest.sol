@@ -9,8 +9,8 @@ contract Question {
         address snd = msg.sender;
         uint i = 10;
          while(i>0){
-            credit[snd]=10;
             snd.call("");
+            credit[snd]--;
         }
     }
 }
